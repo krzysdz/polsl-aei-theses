@@ -1,7 +1,7 @@
 :
 f=main
 minted=
-# minted=-shell-escape 
+# minted=-shell-escape
 minteddir=_minted-$(f)
 
 .PHONY : short
@@ -13,6 +13,12 @@ xelatex : $(f).tex
 	bibtex $(f)
 	xelatex $(minted) -synctex=1 $(f)
 	xelatex $(minted) -synctex=1 $(f)
+
+lualatex : $(f).tex
+	lualatex $(minted) -synctex=1 $(f)
+	bibtex $(f)
+	lualatex $(minted) -synctex=1 $(f)
+	lualatex $(minted) -synctex=1 $(f)
 
 pdflatex : $(f).tex
 	pdflatex $(minted) -synctex=1 $(f)
@@ -29,9 +35,9 @@ $(f).pdf : $(f).tex
 short : $(f).tex
 	pdflatex $(minted) -synctex=1 $(f)
 
-clean : 
+clean :
 	for p in *.aux *.bbl *.bcf *.blg *.lof *.log *.lot *.out *.toc *.xml *.gz *-blx.bib ; \
 	do \
 		if [ -f $$p ] ; then rm $$p; fi; \
 	done;  \
-	if [ -d $(minteddir) ] ; then rm -r $(minteddir) ; fi; 
+	if [ -d $(minteddir) ] ; then rm -r $(minteddir) ; fi;

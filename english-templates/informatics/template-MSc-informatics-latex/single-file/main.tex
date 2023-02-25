@@ -35,13 +35,24 @@
 % 2. XeLaTeX compilation
 %
 % Compilation with the XeLaTeX engine inserts Calibri font
-% in the title page. Of course the font has to be installed.
+% on the title page. Of course the font has to be installed.
 %
-
 % xelatex main
 % bibtex  main
 % xelatex main
 % xelatex main
+%
+%
+% 3. LuaLaTeX compilation
+%
+% Compilation with the LuaLaTeX engine inserts Calibri font
+% on the title page and enables usage of Lua and additional
+% packages. Calibri font has to be installed.
+%
+% lualatex main
+% bibtex   main
+% lualatex main
+% lualatex main
 %
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -113,15 +124,30 @@
 \usepackage{xurl}
 
 
-\usepackage{ifxetex}
+\usepackage{iftex}
+\newif\ifxetexorluatex
+\ifxetex
+	\xetexorluatextrue
+\else
+	\ifluatex
+		\xetexorluatextrue
+	\else
+		\xetexorluatexfalse
+	\fi
+\fi
+
+\ifxetexorluatex
+	\usepackage{fontspec}
+	\defaultfontfeatures{Ligatures=TeX} % to support TeX conventions like ``——-''
+\fi
 
 \ifxetex
-	\usepackage{fontspec}
-	\defaultfontfeatures{Mapping=tex—text} % to support TeX conventions like ``——-''
 	\usepackage{xunicode} % Unicode support for LaTeX character names (accents, European chars, etc)
 	\usepackage{xltxtra} % Extra customizations for XeLaTeX
 \else
-	\usepackage{lmodern}
+	\ifluatex\else
+		\usepackage{lmodern}
+	\fi
 \fi
 
 
@@ -305,6 +331,7 @@ escapeinside={@*}{*@},%
 % This package requires a special command line option in compilation
 % pdflatex -shell-escape main.tex
 % xelatex  -shell-escape main.tex
+% lualatex -shell-escape main.tex
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -340,12 +367,11 @@ escapeinside={@*}{*@},%
 	             left=3cm,
 	             right=2.5cm}
 
-	\ifxetex
-	  \begingroup
-	  \setsansfont{Calibri}
-
+	\ifxetexorluatex
+		\begingroup
+		\setsansfont{Calibri}
 	\fi
-	 \sffamily
+	\sffamily
 	\begin{center}
 	\includegraphics[width=50mm]{\Logo}
 
@@ -387,10 +413,10 @@ escapeinside={@*}{*@},%
 
     {\large\bfseries  Gliwice \the\year}
 
-   \end{center}
-       \ifxetex
-       	  \endgroup
-       \fi
+	\end{center}
+	\ifxetexorluatex
+		\endgroup
+	\fi
 	\restoregeometry
 }
 

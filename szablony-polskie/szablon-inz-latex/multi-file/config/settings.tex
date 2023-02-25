@@ -8,29 +8,44 @@
 
 
 \documentclass[a4paper,twoside,12pt]{book}
-\usepackage[utf8]{inputenc}                                      
-\usepackage[T1]{fontenc}  
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage{amsmath,amsfonts,amssymb,amsthm}
-\usepackage[british,polish]{babel} 
+\usepackage[british,polish]{babel}
 \usepackage{indentfirst}
 \usepackage{xurl}
 
 
-\usepackage{ifxetex}
+\usepackage{iftex}
+\newif\ifxetexorluatex
+\ifxetex
+	\xetexorluatextrue
+\else
+	\ifluatex
+		\xetexorluatextrue
+	\else
+		\xetexorluatexfalse
+	\fi
+\fi
+
+\ifxetexorluatex
+	\usepackage{fontspec}
+	\defaultfontfeatures{Ligatures=TeX} % to support TeX conventions like ``——-''
+\fi
 
 \ifxetex
-	\usepackage{fontspec}
-	\defaultfontfeatures{Mapping=tex—text} % to support TeX conventions like ``——-''
 	\usepackage{xunicode} % Unicode support for LaTeX character names (accents, European chars, etc)
 	\usepackage{xltxtra} % Extra customizations for XeLaTeX
 \else
-	\usepackage{lmodern}
+	\ifluatex\else
+		\usepackage{lmodern}
+	\fi
 \fi
 
 
 
 \usepackage[margin=2.5cm]{geometry}
-\usepackage{graphicx} 
+\usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage{booktabs}
 \usepackage{tikz}
@@ -48,7 +63,7 @@
 %\usepackage[natbib=true,backend=biber,maxbibnames=99]{biblatex}  % kompilacja bibliografii Biberem
 \bibliography{biblio/biblio}
 
-\usepackage{ifmtarg}   % empty commands  
+\usepackage{ifmtarg}   % empty commands
 
 \usepackage{setspace}
 \onehalfspacing
@@ -97,24 +112,24 @@
 
 
 \fancypagestyle{tylkoNumeryStron}{%
-   \fancyhf{} 
+   \fancyhf{}
    \fancyhead[LE,RO]{\it\thepage}
 }
 
 \fancypagestyle{bezNumeracji}{%
-   \fancyhf{} 
+   \fancyhf{}
    \fancyhead[LE,RO]{}
 }
 
 \fancypagestyle{NumeryStronNazwyRozdzialow}{%
-   \fancyhf{} 
+   \fancyhf{}
    \fancyhead[LE]{\nouppercase{\FirstName\ \Surname}}
-   \fancyhead[RO]{\nouppercase{\leftmark}} 
+   \fancyhead[RO]{\nouppercase{\leftmark}}
    \fancyfoot[CE, CO]{\thepage}
 }
 
 
-%%%%%%%%%%%%% OBCE WTRETY  
+%%%%%%%%%%%%% OBCE WTRETY
 \newcommand{\obcy}[1]{\emph{#1}}
 \newcommand{\english}[1]{{\selectlanguage{british}\obcy{#1}}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -127,28 +142,28 @@
 
 \newcounter{stronyPozaNumeracja}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage{xstring}
 \usepackage{ifthen}
-\newcommand{\printOpiekun}[1]{%		
+\newcommand{\printOpiekun}[1]{%
 
     \StrLen{\Consultant}[\mystringlen]
     \ifthenelse{\mystringlen > 0}%
     {%
        {\large{\bfseries OPIEKUN, PROMOTOR POMOCNICZY}\par}
-       
+
        {\large{\bfseries \Consultant}\par}
     }%
     {}
-} 
+}
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- 
+
 % Proszę nie modyfikować poniższych definicji!
 \author{\FirstName\ \Surname}
 \newcommand{\Author}{\FirstName\ \MakeUppercase{\Surname}}
 \newcommand{\Type}{PROJEKT INŻYNIERSKI}
-\newcommand{\Faculty}{Wydział Automatyki, Elektroniki i Informatyki} 
+\newcommand{\Faculty}{Wydział Automatyki, Elektroniki i Informatyki}
 \newcommand{\Polsl}{Politechnika Śląska}
 \newcommand{\Logo}{graf/politechnika_sl_logo_bw_pion_pl.pdf}
 \newcommand{\LeftId}{Nr albumu}

@@ -45,6 +45,19 @@
 % xelatex main
 %
 %
+% 3. kompilacja LuaLaTeX
+%
+% Kompilacja przy użyciu LuaLaTeX różni się tym, że na stronie
+% tytułowej używany jest font Calibri i pozwala na używanie Lua
+% oraz dodatkowych pakietów. Czcionka Calibri musi być uprzednio
+% zainstalowana.
+%
+% lualatex main
+% bibtex   main
+% lualatex main
+% lualatex main
+%
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % W przypadku pytań, uwag, proszę pisać na adres:   %
 %      krzysztof.siminski(małpa)polsl.pl            %
@@ -112,15 +125,30 @@
 \usepackage{xurl}
 
 
-\usepackage{ifxetex}
+\usepackage{iftex}
+\newif\ifxetexorluatex
+\ifxetex
+	\xetexorluatextrue
+\else
+	\ifluatex
+		\xetexorluatextrue
+	\else
+		\xetexorluatexfalse
+	\fi
+\fi
+
+\ifxetexorluatex
+	\usepackage{fontspec}
+	\defaultfontfeatures{Ligatures=TeX} % to support TeX conventions like ``——-''
+\fi
 
 \ifxetex
-	\usepackage{fontspec}
-	\defaultfontfeatures{Mapping=tex—text} % to support TeX conventions like ``——-''
 	\usepackage{xunicode} % Unicode support for LaTeX character names (accents, European chars, etc)
 	\usepackage{xltxtra} % Extra customizations for XeLaTeX
 \else
-	\usepackage{lmodern}
+	\ifluatex\else
+		\usepackage{lmodern}
+	\fi
 \fi
 
 
@@ -304,6 +332,7 @@ escapeinside={@*}{*@},%
 % pakiet wymaga specjalnego kompilowania:
 % pdflatex -shell-escape main.tex
 % xelatex  -shell-escape main.tex
+% lualatex -shell-escape main.tex
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -340,12 +369,11 @@ escapeinside={@*}{*@},%
 	             left=3cm,
 	             right=2.5cm}
 
-	\ifxetex
-	  \begingroup
-	  \setsansfont{Calibri}
-
+	\ifxetexorluatex
+		\begingroup
+		\setsansfont{Calibri}
 	\fi
-	 \sffamily
+	\sffamily
 	\begin{center}
 	\includegraphics[width=50mm]{\Logo}
 
@@ -387,10 +415,10 @@ escapeinside={@*}{*@},%
 
     {\large\bfseries  Gliwice \the\year}
 
-   \end{center}
-       \ifxetex
-       	  \endgroup
-       \fi
+	\end{center}
+	\ifxetexorluatex
+		\endgroup
+	\fi
 	\restoregeometry
 }
 
